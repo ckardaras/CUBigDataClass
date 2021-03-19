@@ -3,13 +3,6 @@ import datetime
 
 def DataGrab(startDate,endDate):
     c = twint.Config()
-    config = twint.Config()
-    config.Proxy_host = "51.158.68.68"
-    config.Proxy_port = "8761"
-    config.Proxy_type = "http"
-    config.Username = "ubuntu"
-    twint.run.Lookup(config)
-    
     c.Popular_tweets = True
     c.Since = startDate
     c.Until = endDate
