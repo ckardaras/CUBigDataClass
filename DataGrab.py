@@ -10,7 +10,7 @@ def DataGrab(startDate,endDate):
     c.Custom["user"] = ["id", "username"]
     c.Limit = 10000
     c.Store_csv = True
-    c.Output = startDate[0:10]+".csv"
+    c.Output = "Data"+"/"+startDate[0:10]+".csv"
     twint.run.Search(c)
 
 startDate = datetime.datetime(2020,3,20)
