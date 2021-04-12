@@ -1,12 +1,19 @@
 from flask import render_template
 
-
+from app.models import BTC_Weekly
 from main import app, db
 
 
 @app.route('/')
 def home():
     return render_template('home.html')
+
+
+@app.route('/chart')
+def chart():
+    weekly = BTC_Weekly.query.order_by(BTC_Weekly.date).all()
+    print(weekly)
+    return render_template('chart_example.html', weekly=weekly)
 
 
 
