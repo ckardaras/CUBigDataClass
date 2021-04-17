@@ -2,11 +2,15 @@ from flask import render_template
 
 from app.models import BTC_Weekly
 from main import app, db
-
+import pandas as pd
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    df = pd.read_csv('bitcoin')
+    chart_data = df.to_dict(orient='records')
+    chart_data = json.dumps(chart_data, indent=2)
+    data = {'chart_data': chart_data}
+    return render_template("home.html")
 
 
 @app.route('/chart')
