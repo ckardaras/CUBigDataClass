@@ -49,7 +49,6 @@ def scrub_tweet(tweet,emojipedia):
     return tweet_reborn
 
 
-
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     emojipedia = {}
@@ -86,7 +85,7 @@ if __name__ == '__main__':
     df.drop(index_names, inplace=True)
     df = df.drop(['conversation_id','timezone','language','mentions','urls','photos','replies_count','retweets_count','likes_count','retweet','video','reply_to'], axis=1)
     df['regex_tweet'] = df.apply(lambda row: regex_tweet(row['tweet']), axis=1)
-    df['scrubbed_tweet']=df.apply(lambda row: scrub_tweet(row['regex_tweet'],emojipedia),axis=1)
+    df['scrubbed_tweet']= df.apply(lambda row: scrub_tweet(row['regex_tweet'],emojipedia),axis=1)
     df['sentiment'] = df.apply(lambda row: sent_analysis(row['scrubbed_tweet']),axis = 1)
     compression_opts = dict(method='zip',
                             archive_name='out3.csv')
