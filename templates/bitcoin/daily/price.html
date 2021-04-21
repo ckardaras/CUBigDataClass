@@ -6,10 +6,10 @@
     var options = {
         series: [{
             data: [
-                {% for weekly_data in weekly %}
+                {% for price in prices %}
                     {
-                        x: new Date('{{ weekly_data.date }}').toLocaleDateString(),
-                        y: {{ weekly_data.average }},
+                        x: new Date('{{ price.date }}').toLocaleDateString(),
+                        y: {{ price.average }},
                     },
                 {% endfor %}
             ]
@@ -34,7 +34,7 @@
           size: 0,
         },
         title: {
-          text: 'BTC Weekly Price',
+          text: 'BTC Daily Price',
           align: 'left'
         },
         fill: {

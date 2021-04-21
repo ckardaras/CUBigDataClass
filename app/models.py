@@ -13,7 +13,7 @@ class Tweet(db.Model):
     text = db.Column(db.Text)
 
 
-class Sentiments(db.Model):
+class BTC_Sentiments(db.Model):
     date = db.Column(db.Date, primary_key=True)
     avg_sentiment = db.Column(db.DECIMAL)
 

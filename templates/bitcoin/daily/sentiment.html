@@ -8,15 +8,18 @@
         series: [{
             name: 'Bitcoin Price',
             type: 'column',
-            data: [{% for daily_price in btc %} {{ daily_price.average }}, {% endfor %}]
+            data: [
+                {% for daily_price in btc %} {{ daily_price.average }}, {% endfor %}
+            ]
         }, {
           name: 'Sentiment Analysis',
           type: 'line',
-          data: [{% for tweet in tweets %} {{ tweet }} * 10000, {% endfor %}]
+          data: [{% for sentiment in sentiments %} {{ sentiment.avg_sentiment }}, {% endfor %}]
         }],
-          chart: {
+        chart: {
           height: 350,
           type: 'line',
+            colors: ['#F47B20', '#005596'],
         },
         stroke: {
           width: [0, 4]
@@ -28,7 +31,7 @@
           enabled: true,
           enabledOnSeries: [1]
         },
-        labels: ['01 Jan 2001', '02 Jan 2001', '03 Jan 2001', '04 Jan 2001', '05 Jan 2001', '06 Jan 2001', '07 Jan 2001', '08 Jan 2001', '09 Jan 2001', '10 Jan 2001', '11 Jan 2001', '12 Jan 2001'],
+        labels: [{% for daily_price in btc %}  new Date('{{ daily_price.date }}').toLocaleDateString(), {% endfor %}],
         xaxis: {
           type: 'datetime'
         },

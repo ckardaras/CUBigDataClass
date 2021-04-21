@@ -1,7 +1,9 @@
+from datetime import date
+
 from flask import render_template
 from sqlalchemy import func
 
-from app.models import BTC_Weekly, BTC_Daily, Tweet
+from app.models import BTC_Weekly, BTC_Daily, Tweet, BTC_Sentiments
 from main import app, db
 
 
@@ -10,20 +12,20 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/chart')
+@app.route('/btc/daily/price')
 def chart():
-    weekly = BTC_Weekly.query.order_by(BTC_Weekly.date).all()
-    print(weekly)
-    return render_template('chart_example.html', weekly=weekly)
+    price = BTC_Daily.query.order_by(BTC_Daily.date).all()
+    return render_template('/bitcoin/daily/price.html', prices=price)
 
 
-@app.route('/daily/sentiment_chart')
+@app.route('/btc/daily/sentiment')
 def daily_sentiment_chart():
-    #btc_prices = BTC_Daily.query.order_by(BTC_Daily.date).all()
-    #tweets = db.session.query(int(func.avg(Tweet.sentiment).label('average')).group_by(Tweet.date).order_by(Tweet.date).all()
+    start = date(year=2020, month=3, day=21)
+    end = date(year=2021, month=3, day=16)
+    btc_prices = BTC_Daily.query.filter(BTC_Daily.date >= start, BTC_Daily.date <= end).order_by(BTC_Daily.date).all()
+    sentiments = BTC_Sentiments.query.order_by(BTC_Sentiments.date).all()
 
-    return "te"
-    #return render_template('daily/sentiment.html', btc=btc_prices, tweets=tweets)
+    return render_template('/bitcoin/daily/sentiment.html', btc=btc_prices, sentiments=sentiments)
 
 '''
 def query():
