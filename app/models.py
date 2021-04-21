@@ -14,7 +14,7 @@ class Tweet(db.Model):
 
 
 class Sentiments(db.Model):
-    date = db.Column(db.DateTime, primary_key=True)
+    date = db.Column(db.Date, primary_key=True)
     avg_sentiment = db.Column(db.DECIMAL)
 
 
