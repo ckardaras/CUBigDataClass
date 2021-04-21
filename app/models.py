@@ -18,11 +18,6 @@ class Sentiments(db.Model):
     avg_sentiment = db.Column(db.DECIMAL)
 
 
-class Coin(db.Model):
-    coin_id = db.Column(db.Integer, primary_key=True)
-    coin_name = db.Column(db.String)
-
-
 class BTC_Daily(db.Model):
     date = db.Column(db.Date, primary_key=True)
     open = db.Column(db.DECIMAL)
