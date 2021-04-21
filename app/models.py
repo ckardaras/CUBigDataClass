@@ -4,8 +4,13 @@ from main import db
 class Tweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False)
-    tweet = db.Column(db.Text)
+    time = db.Column(db.TIME, nullable=False)
+    username = db.Column(db.Text)
+    hashtags = db.Column(db.Text)
+    cashtags = db.Column(db.Text)
+    link = db.Column(db.Text)
     sentiment = db.Column(db.Float, nullable=False)
+    text = db.Column(db.Text)
 
 
 class Sentiments(db.Model):
