@@ -8,6 +8,11 @@ class Tweet(db.Model):
     sentiment = db.Column(db.Float, nullable=False)
 
 
+class Sentiments(db.Model):
+    date = db.Column(db.DateTime, primary_key=True)
+    avg_sentiment = db.Column(db.DECIMAL)
+
+
 class Coin(db.Model):
     coin_id = db.Column(db.Integer, primary_key=True)
     coin_name = db.Column(db.String)
