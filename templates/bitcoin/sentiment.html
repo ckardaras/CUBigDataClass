@@ -14,7 +14,11 @@
         }, {
           name: 'Sentiment Analysis',
           type: 'line',
-          data: [{% for sentiment in sentiments %} {{ sentiment.avg_sentiment }}, {% endfor %}]
+          data: [
+              {% for sentiment in sentiments %}
+                  {{ sentiment[0] }},
+              {% endfor %}
+          ]
         }],
         chart: {
           height: 350,
@@ -25,7 +29,7 @@
           width: [0, 4]
         },
         title: {
-          text: 'Traffic Sources'
+          text: '{{ title }}'
         },
         dataLabels: {
           enabled: true,

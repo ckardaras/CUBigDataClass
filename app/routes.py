@@ -34,14 +34,56 @@ def btc_monthly_price():
 
 
 @app.route('/btc/daily/sentiment')
-def daily_sentiment_chart():
+def btc_daily_sentiment():
     start = date(year=2020, month=3, day=21)
     end = date(year=2021, month=3, day=16)
     btc_prices = BTC_Daily.query.filter(BTC_Daily.date >= start, BTC_Daily.date <= end).order_by(BTC_Daily.date).all()
     sentiments = BTC_Sentiments.query.order_by(BTC_Sentiments.date).all()
-    print("lol", sentiments)
 
-    return render_template('/bitcoin/daily/sentiment.html', btc=btc_prices, sentiments=sentiments)
+    chart_title = "BTC Daily Price vs Sentiment"
+
+    return render_template('/bitcoin/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
+
+
+@app.route('/btc/weekly/sentiment')
+def btc_weekly_sentiment():
+    start = date(year=2020, month=3, day=21)
+    end = date(year=2021, month=3, day=16)
+    btc_prices = BTC_Weekly.query.filter(BTC_Weekly.date >= start, BTC_Weekly.date <= end).order_by(
+        BTC_Weekly.date).all()
+    sentiments = db.session.execute("""
+        select AVG(avg_sentiment)::float, 
+            date_trunc('week', date)::date
+        from "BTC__sentiments"
+        group by 
+          date_trunc('week', date)
+        order by date_trunc;
+    """).fetchall()
+
+    chart_title = "BTC Weekly Price vs Sentiment"
+
+    return render_template('/bitcoin/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
+
+
+@app.route('/btc/monthly/sentiment')
+def btc_monthly_sentiment():
+    start = date(year=2020, month=3, day=21)
+    end = date(year=2021, month=3, day=16)
+    btc_prices = BTC_Monthly.query.filter(BTC_Monthly.date >= start, BTC_Monthly.date <= end).order_by(
+        BTC_Monthly.date).all()
+    sentiments = db.session.execute("""
+        select AVG(avg_sentiment)::float, 
+            date_trunc('month', date)::date
+        from "BTC__sentiments"
+        group by 
+          date_trunc('month', date)
+        order by date_trunc;
+    """).fetchall()
+
+    chart_title = "BTC Monthly Price vs Sentiment"
+
+    return render_template('/bitcoin/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
+
 
 '''
 def query():
