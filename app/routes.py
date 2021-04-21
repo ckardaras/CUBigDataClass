@@ -3,7 +3,7 @@ from datetime import date
 from flask import render_template
 from sqlalchemy import func
 
-from app.models import BTC_Weekly, BTC_Daily, Tweet, BTC_Sentiments, BTC_Monthly
+from app.models import *
 from main import app, db
 
 
@@ -41,6 +41,8 @@ def btc_daily_sentiment():
     sentiments = BTC_Sentiments.query.order_by(BTC_Sentiments.date).all()
 
     chart_title = "BTC Daily Price vs Sentiment"
+
+    print(sentiments)
 
     return render_template('/bitcoin/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
 
