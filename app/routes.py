@@ -70,7 +70,7 @@ def btc_weekly_sentiment():
 @app.route('/btc/monthly/sentiment')
 def btc_monthly_sentiment():
     start = date(year=2020, month=3, day=21)
-    end = date(year=2021, month=3, day=16)
+    end = date(year=2021, month=3, day=15)
     btc_prices = BTC_Monthly.query.filter(BTC_Monthly.date >= start, BTC_Monthly.date <= end).order_by(
         BTC_Monthly.date).all()
     sentiments = db.session.execute("""
@@ -86,6 +86,77 @@ def btc_monthly_sentiment():
 
     return render_template('/bitcoin/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
 
+
+@app.route('/eth/daily/price')
+def eth_daily_price():
+    price = ETH_Daily.query.order_by(ETH_Daily.date).all()
+    chart_title = "ETH Daily Price"
+    return render_template('/ethereum/price.html', prices=price, title=chart_title)
+
+@app.route('/eth/weekly/price')
+def eth_weekly_price():
+    price = ETH_Weekly.query.order_by(ETH_Weekly.date).all()
+    chart_title = "ETH Weekly Price"
+    return render_template('/ethereum/price.html', prices=price, title=chart_title)
+
+@app.route('/eth/monthly/price')
+def eth_monthly_price():
+    price = ETH_Monthly.query.order_by(ETH_Monthly.date).all()
+    chart_title = "ETH Monthly Price"
+    return render_template('/ethereum/price.html', prices=price, title=chart_title)
+
+
+@app.route('/eth/daily/sentiment')
+def eth_daily_sentiment():
+    start = date(year=2020, month=3, day=21)
+    end = date(year=2021, month=3, day=16)
+    btc_prices = ETH_Daily.query.filter(ETH_Daily.date >= start, ETH_Daily.date <= end).order_by(ETH_Daily.date).all()
+    sentiments = ETH_Sentiments.query.order_by(ETH_Sentiments.date).all()
+
+    chart_title = "ETH Daily Price vs Sentiment"
+
+    print(sentiments)
+
+    return render_template('/ethereum/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
+
+
+@app.route('/eth/weekly/sentiment')
+def eth_weekly_sentiment():
+    start = date(year=2020, month=3, day=21)
+    end = date(year=2021, month=3, day=16)
+    btc_prices = ETH_Weekly.query.filter(ETH_Weekly.date >= start, ETH_Weekly.date <= end).order_by(
+        ETH_Weekly.date).all()
+    sentiments = db.session.execute("""
+        select AVG(avg_sentiment)::float, 
+            date_trunc('week', date)::date
+        from "ETH__sentiments"
+        group by 
+          date_trunc('week', date)
+        order by date_trunc;
+    """).fetchall()
+
+    chart_title = "ETH Weekly Price vs Sentiment"
+
+    return render_template('/ethereum/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
+
+@app.route('/eth/monthly/sentiment')
+def eth_monthly_sentiment():
+    start = date(year=2020, month=3, day=21)
+    end = date(year=2021, month=3, day=16)
+    btc_prices = ETH_Monthly.query.filter(ETH_Monthly.date >= start, ETH_Monthly.date <= end).order_by(
+        ETH_Monthly.date).all()
+    sentiments = db.session.execute("""
+        select AVG(avg_sentiment)::float, 
+            date_trunc('month', date)::date
+        from "ETH__sentiments"
+        group by 
+          date_trunc('month', date)
+        order by date_trunc;
+    """).fetchall()
+
+    chart_title = "ETH Monthly Price vs Sentiment"
+
+    return render_template('/ethereum/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
 
 '''
 def query():
