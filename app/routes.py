@@ -54,10 +54,10 @@ def btc_weekly_sentiment():
     btc_prices = BTC_Weekly.query.filter(BTC_Weekly.date >= start, BTC_Weekly.date <= end).order_by(
         BTC_Weekly.date).all()
     sentiments = db.session.execute("""
-        select AVG(avg_sentiment)::float, 
+        select AVG(avg_sentiment)::float,
             date_trunc('week', date)::date
         from "BTC__sentiments"
-        group by 
+        group by
           date_trunc('week', date)
         order by date_trunc;
     """).fetchall()
@@ -74,10 +74,10 @@ def btc_monthly_sentiment():
     btc_prices = BTC_Monthly.query.filter(BTC_Monthly.date >= start, BTC_Monthly.date <= end).order_by(
         BTC_Monthly.date).all()
     sentiments = db.session.execute("""
-        select AVG(avg_sentiment)::float, 
+        select AVG(avg_sentiment)::float,
             date_trunc('month', date)::date
         from "BTC__sentiments"
-        group by 
+        group by
           date_trunc('month', date)
         order by date_trunc;
     """).fetchall()
@@ -85,6 +85,10 @@ def btc_monthly_sentiment():
     chart_title = "BTC Monthly Price vs Sentiment"
 
     return render_template('/bitcoin/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html', title = '404'), 404
 
 
 '''
