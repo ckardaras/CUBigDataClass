@@ -1,6 +1,6 @@
 from datetime import date
 
-from flask import render_template
+from flask import render_template, send_file
 from sqlalchemy import func
 
 from app.models import *
@@ -9,7 +9,7 @@ from main import app, db
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('dashboard.html')
 
 
 @app.route('/btc/daily/price')
@@ -86,13 +86,16 @@ def btc_monthly_sentiment():
 
     return render_template('/bitcoin/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
 
+
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('404.html', title = '404'), 404
+    return render_template('404.html', title='404'), 404
+
 
 @app.route('/wordcloud')
 def d3_wordcloud():
-    return render_template('/wordcloud.html', title = 'word cloud')
+    return render_template('/wordcloud.html', title='word cloud')
+
 
 @app.route('/eth/daily/price')
 def eth_daily_price():
@@ -100,11 +103,13 @@ def eth_daily_price():
     chart_title = "ETH Daily Price"
     return render_template('/ethereum/price.html', prices=price, title=chart_title)
 
+
 @app.route('/eth/weekly/price')
 def eth_weekly_price():
     price = ETH_Weekly.query.order_by(ETH_Weekly.date).all()
     chart_title = "ETH Weekly Price"
     return render_template('/ethereum/price.html', prices=price, title=chart_title)
+
 
 @app.route('/eth/monthly/price')
 def eth_monthly_price():
@@ -146,6 +151,7 @@ def eth_weekly_sentiment():
 
     return render_template('/ethereum/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
 
+
 @app.route('/eth/monthly/sentiment')
 def eth_monthly_sentiment():
     start = date(year=2020, month=3, day=21)
@@ -164,6 +170,7 @@ def eth_monthly_sentiment():
     chart_title = "ETH Monthly Price vs Sentiment"
 
     return render_template('/ethereum/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
+
 
 '''
 def query():

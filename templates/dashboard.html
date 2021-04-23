@@ -1,0 +1,25 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+<select>
+    <option value="btc_daily_price">BTC Daily Price</option>
+    <option value="btc_weekly_price">BTC Weekly Price</option>
+    <option value="btc_monthly_price">BTC Monthly Price</option>
+    <option value="btc_daily_sentiment">BTC Daily Sentiment</option>
+    <option value="btc_weekly_sentiment">BTC Weekly Sentiment</option>
+    <option value="btc_monthly_sentiment">BTC Monthly Sentiment</option>
+</select>
+
+<iframe src="{{ url_for('btc_daily_price') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_daily_price"></iframe>
+<iframe src="{{ url_for('btc_weekly_price') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_weekly_price"></iframe>
+<iframe src="{{ url_for('btc_monthly_price') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_monthly_price"></iframe>
+
+<iframe src="{{ url_for('btc_daily_sentiment') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_daily_sentiment"></iframe>
+<iframe src="{{ url_for('btc_weekly_sentiment') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_weekly_sentiment"></iframe>
+<iframe src="{{ url_for('btc_monthly_sentiment') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_monthly_sentiment"></iframe>
+
+<script>
+    $('select').on('change', function() {
+        $('iframe').not('#' + this.value).hide();
+        $('#' + this.value).show();
+    });
+</script>
