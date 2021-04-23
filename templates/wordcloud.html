@@ -1,0 +1,63 @@
+<meta charset="utf-8">
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<!-- Load d3-cloud -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.js"></script>
+
+<svg id="wordcloud" width=1000 height=400>
+<!-- svg-section is where we generate our word cloud -->
+</svg>
+
+<script>
+var fill = d3.scaleOrdinal(d3.schemeCategory20);
+
+var data = [
+    {text: "Hello", value:6260},
+    {text: "ATH", value:1260},
+    {text: "DOGE", value:5370},
+    {text: "BITCOIN", value:2480},
+    {text: "ELON", value:4350},
+    {text: "unicorn", value:1250},
+    {text: "WOW", value:3140},
+    {text: "happy", value:1990},
+    {text: "ETHEREUM", value:1040},
+    {text: "HODL", value:8000},
+    {text: "DIP", value:991},
+    {text: "buy", value:4440},
+    {text: "sucks", value:1000},
+    {text: "good", value:1000},
+    {text: "money", value:1000},
+    {text: "paperhands", value:1091},
+    {text: "no", value:391},
+    {text: "yes", value:440},
+    {text: "why", value:500},
+    {text: "bad", value:3091},
+    {text: "BTC", value:4230}
+];
+
+var layout = d3.layout.cloud()
+    .size([800, 400])
+    .words(data)
+    // .font("Impact")
+    .padding(.5)
+    
+    .on("end", draw);
+
+layout.start();
+
+function draw(words) {
+    d3.select("#wordcloud")
+        .append("g")
+        .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+        .selectAll("text")
+        .data(words)
+        .enter()
+        .append("text")
+        .text((d) => d.text)
+        .style("font-size", (d) => d.size + "px")
+        .style("font-family", (d) => d.font)
+        .style("fill", (d, i) => fill(i))
+        .attr("text-anchor", "middle")
+        .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
+}
+</script>
