@@ -1,0 +1,62 @@
+<div id="chart">
+</div>
+ <script src="{{ url_for('static', filename='js/apex/apexcharts.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"> </script>
+
+<script>
+    var options = {
+        series: [{
+            name: 'Ethereum Price',
+            type: 'column',
+            data: [
+                {% for daily_price in btc %} {{ daily_price.average }}, {% endfor %}
+            ]
+        }, {
+          name: 'Sentiment Analysis',
+          type: 'line',
+          data: [
+              {% for sentiment in sentiments %}
+                  {% if sentiment.avg_sentiment is defined %}
+                    {{ sentiment.avg_sentiment }},
+                  {% else %}
+                    {{ sentiment[0] }},
+                  {% endif %}
+              {% endfor %}
+          ]
+        }],
+        chart: {
+          height: 350,
+          type: 'line',
+            colors: ['#F47B20', '#005596'],
+        },
+        stroke: {
+          width: [0, 4],
+            show: true
+        },
+        title: {
+          text: '{{ title }}'
+        },
+        dataLabels: {
+          enabled: true,
+          enabledOnSeries: [1]
+        },
+        labels: [{% for daily_price in btc %}  new Date('{{ daily_price.date }}').toLocaleDateString(), {% endfor %}],
+        xaxis: {
+          type: 'datetime'
+        },
+        yaxis: [{
+          title: {
+            text: 'Website Blog',
+          },
+
+        }, {
+          opposite: true,
+          title: {
+            text: 'Social Media'
+          }
+        }]
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+</script>
