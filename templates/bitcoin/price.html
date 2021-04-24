@@ -1,63 +1,145 @@
+<button id="one-day">24 HR</button>
+<button id="one-week">ONE WEEK</button>
+<button id="one-month">ONE MONTH</button>
+<button id="three-months">THREE MONTHS</button>
+<button id="one-year">1 YEAR</button>
+<button id="all">ALL</button>
 <div id="chart">
 </div>
  <!--<script src="{{ url_for('static', filename='js/apex/apexcharts.js') }}"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"> </script>
 <script>
+    var start_date = new Date("24 Apr 2019"); //Earliest BTC price history we have
     var options = {
         series: [{
             data: [
                 {% for price in prices %}
                     {
-                        x: new Date('{{ price.date }}').toLocaleDateString(),
+                        x: new Date('{{ price.date }}').getTime(),
                         y: {{ price.average }},
                     },
                 {% endfor %}
             ]
         }],
           chart: {
+          id: 'area-datetime',
           type: 'area',
-          stacked: false,
           height: 350,
           zoom: {
-            type: 'x',
-            enabled: true,
             autoScaleYaxis: true
-          },
-          toolbar: {
-            autoSelected: 'zoom'
           }
+        },
+        annotations: {
+          yaxis: [{
+            y: 30,
+            borderColor: '#999',
+            label: {
+              show: true,
+              text: 'Support',
+              style: {
+                color: "#fff",
+                background: '#00E396'
+              }
+            }
+          }],
+          xaxis: [{
+            x: start_date.getTime(),
+            borderColor: '#999',
+            yAxisIndex: 0,
+            label: {
+              show: true,
+              text: 'Rally',
+              style: {
+                color: "#fff",
+                background: '#775DD0'
+              }
+            }
+          }]
         },
         dataLabels: {
           enabled: false
         },
         markers: {
           size: 0,
+          style: 'hollow',
         },
-        title: {
-          text: '{{ title }}',
-          align: 'left'
+        xaxis: {
+          type: 'datetime',
+          min: start_date.getTime(),
+          tickAmount: 6,
+        },
+        tooltip: {
+          x: {
+            format: 'dd MMM yyyy'
+          }
         },
         fill: {
           type: 'gradient',
           gradient: {
             shadeIntensity: 1,
-            inverseColors: false,
-            opacityFrom: 0.5,
-            opacityTo: 0,
-            stops: [0, 90, 100]
-          },
-        },
-        tooltip: {
-          shared: false,
-          y: {
-            formatter: function (val) {
-              return val;
-
-            }
+            opacityFrom: 0.7,
+            opacityTo: 0.9,
+            stops: [0, 100]
           }
-        }
+        },
         };
 
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
+
+
+        var resetCssClasses = function(activeEl) {
+        var els = document.querySelectorAll('button')
+        Array.prototype.forEach.call(els, function(el) {
+          el.classList.remove('active')
+        })
+
+        activeEl.target.classList.add('active')
+      }
+
+        function zoom(days) {
+            var date = new Date();
+            date.setHours(0,0,0,0);
+            var start = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
+            chart.zoomX(
+                start.getTime(),
+                date.getTime()
+            )
+        }
+
+        document.querySelector('#one-day').addEventListener('click', function(e) {
+            resetCssClasses(e);
+            zoom(1);
+        });
+
+        document.querySelector('#one-week').addEventListener('click', function(e) {
+            resetCssClasses(e);
+            zoom(7);
+        });
+
+        document.querySelector('#one-month').addEventListener('click', function(e) {
+            resetCssClasses(e);
+            zoom(30);
+        });
+
+        document.querySelector('#three-months').addEventListener('click', function(e) {
+            resetCssClasses(e);
+            zoom(90);
+        });
+
+        document.querySelector('#one-year').addEventListener('click', function(e) {
+            resetCssClasses(e);
+            zoom(365);
+        });
+
+        document.querySelector('#all').addEventListener('click', function(e) {
+            resetCssClasses(e);
+            var date = new Date();
+            chart.zoomX(
+                start_date.getTime(),
+                date.getTime()
+            )
+        });
+
+
 </script>
