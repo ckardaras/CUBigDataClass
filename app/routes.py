@@ -24,7 +24,7 @@ def btc_daily_sentiment():
     start = date(year=2020, month=3, day=21)
     end = date(year=2021, month=3, day=16)
     prices = btc_prices.query.filter(btc_prices.date >= start, btc_prices.date <= end).order_by(btc_prices.date).all()
-    sentiments = BTC_Sentiments.query.order_by(BTC_Sentiments.date).all()
+    sentiments = btc_sentiments.query.order_by(btc_sentiments.date).all()
 
     chart_title = "BTC Daily Price vs Sentiment"
 
