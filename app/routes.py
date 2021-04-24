@@ -1,7 +1,10 @@
-from datetime import date
+from datetime import date, datetime
 
 from flask import render_template, send_file
+from nltk import RegexpTokenizer, WordNetLemmatizer, SnowballStemmer
+from nltk.corpus import stopwords
 from sqlalchemy import func
+
 
 from app.models import *
 from main import app, db
@@ -124,3 +127,99 @@ def query():
     row = BTC.query.filter(BTC.id == 1).first()
     return render_template('query.html', row=row)
 '''
+
+
+@app.route('/btc/dailyschedule')
+def btc_task_grab_sentiment():
+    #
+    # functions for sentiment analysis
+    #
+    def stem_tokenize(text):
+        tokenized_text = tokenzr.tokenize(text.lower())
+        words = [lemmatizer.lemmatize(w) for w in tokenized_text if w not in stop_words]
+        stem_text = " ".join([stemmer.stem(i) for i in words])
+        return stem_text  # converted emoji to unicode description of emoji is return as string text
+
+
+    def regex_tweet(tweet):
+        tweet = ' '.join(re.sub("(\$[A-Za-z0-9]+)", " ", tweet).split())
+        tweet = ' '.join(re.sub("(@[A-Za-z0-9]+)|(#[A-Za-z0-9]+)", " ", tweet).split())
+        tweet = ' '.join(re.sub("(\w+:\/\/\S+)", " ", tweet).split())
+        tweet = ' '.join(re.sub("[\.\,\!\?\:\;\-\=]", " ", tweet).split())
+        tweet = ' '.join(re.sub("[\[\]]", " ", tweet).split())
+        return tweet
+
+
+    def clean_mean(val):
+        return val.replace('_', ' ').replace('-', ' ').replace(':', ' ')
+
+
+    def convert_emojicon(text):
+        for emoti in emot.emo_unicode.EMOTICONS:
+            if emoti in text:
+                text = text.replace(emoti, clean_mean(emot.emo_unicode.EMOTICONS.get(emoti, '')))
+
+        for emoti in emot.emo_unicode.UNICODE_EMO:
+            if emoti in text:
+                text = text.replace(emoti, clean_mean(emot.emo_unicode.UNICODE_EMO.get(emoti, '')))
+
+        for emoti in emot.emo_unicode.EMOTICONS_EMO:
+            if emoti in text:
+                text = text.replace(emoti, clean_mean(emot.emo_unicode.EMOTICONS_EMO.get(emoti, '')))
+
+        return text
+    #
+    #
+    # Grab tweets
+    ##### Tokens
+    consumer_key = 'Ou9XaMR4qgy3KGr7cSfvhjnYl'
+    consumer_secret = 'kTl5Vs6918QYgEkufJVPbpfbuyFAyyjYfkRcl2hAL5BjGyqxyj'
+    access_token = '2991366318-LhMbjkJGvNkmO5bwSzVfMhZQWl19dzoPdgOWD8V'
+    access_token_secret = 'qmRpWmw2UHP3VPYOoodeOIt2s8liaGnEaePDSF9JtFIYI'
+    ### Connect to API
+    auth = tw.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tw.API(auth, wait_on_rate_limit=True)
+    ### Set search words (default is bitcoin)
+    search_words = "#btc OR #bitcoin OR bitcoin OR btc"
+    ### Set time (Daily)
+    date_since = datetime.today().strftime('%Y-%m-%d')
+    ### Tweet object
+    tweets = tw.Cursor(api.search,
+                       q=search_words,
+                       lang="en",
+                       since=date_since).items()
+    stop_words = stopwords.words("english")
+    stemmer = SnowballStemmer("english", ignore_stopwords=True)
+    lemmatizer = WordNetLemmatizer()
+    tokenzr = RegexpTokenizer('\s+', gaps=True)
+
+
+
+    sia = SIA()
+
+    count = 0
+    sentiment_counter = 0
+    for tweet in tweets:
+        tweet_id = tweet.id
+        tweet_time = tweet.created_at
+        tweet_username = tweet.author.screen_name
+
+        tweet_hashtags = tweet.entities['hashtags']
+        hashtags = []
+        for hashtag in tweet_hashtags:
+            hashtags.append(hashtag['text'])
+
+        cashtags = ""
+        link = "https://twitter.com/{username}/status/{id}".format(username=tweet_username, id=tweet_id)
+
+        tweet_text = tweet.text
+        tweet_text = convert_emojicon(tweet_text)
+
+        tweet_sentiment = TextBlob(tweet_text).sentiment.polarity
+        sentiment_counter += tweet_sentiment
+
+        print(tweet_id, tweet_date, tweet_username, hashtags, link, tweet_text, tweet_sentiment)
+        count += 1
+        if count > 5:
+            break
