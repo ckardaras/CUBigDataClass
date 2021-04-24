@@ -2,8 +2,8 @@ from main import db
 
 
 class BTC_Tweet(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False)
+    id = db.Column(db.BIGINT, primary_key=True)
+    date = db.Column(db.Date, nullable=False)
     time = db.Column(db.TIME, nullable=False)
     username = db.Column(db.Text)
     hashtags = db.Column(db.Text)
@@ -13,8 +13,8 @@ class BTC_Tweet(db.Model):
     text = db.Column(db.Text)
 
 class ETH_Tweet(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False)
+    id = db.Column(db.BIGINT, primary_key=True)
+    date = db.Column(db.Date, nullable=False)
     time = db.Column(db.TIME, nullable=False)
     username = db.Column(db.Text)
     hashtags = db.Column(db.Text)
