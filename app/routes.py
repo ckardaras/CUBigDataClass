@@ -1,6 +1,6 @@
 from datetime import date
 
-from flask import render_template, send_file
+from flask import render_template, send_file, request
 from sqlalchemy import func
 
 from app.models import *
@@ -15,7 +15,14 @@ def dashboard():
 
 @app.route('/btc/news')
 def btc_news():
-    news_articles = btc_articles.query.order_by(func.random()).limit(10).all()
+    since = request.args.get('since')
+    news_articles = None
+    print(since)
+    if since is None:
+        news_articles = btc_articles.query.order_by(func.random()).limit(30).all()
+    else:
+        news_articles = btc_articles.query.filter(btc_articles.date >= since).order_by(func.random()).limit(30).all()
+
     return render_template('bitcoin/news.html', articles = news_articles)
 
 

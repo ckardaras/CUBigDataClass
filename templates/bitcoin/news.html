@@ -4,7 +4,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <style>
     h3 {
-        -webkit-text-stroke: 1px black;
+        text-shadow: 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black, 0 0 4px black;
+        -webkit-font-smoothing: antialiased;
     }
 </style>
 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
@@ -14,17 +15,21 @@
             {% if vars.first %}
                 <div class="carousel-item active">
                     <div class="carousel-caption d-none d-md-block">
-                        <h3>{{ article.headline }}</h3>
+                        <h3>{{ article.headline }} ({{ article.date }})</h3>
                     </div>
-                    <img class="d-block w-100" src="{{ article.image_url }}">
+                    <a href="{{ article.article_url }}" target="_blank">
+                        <img class="d-block w-100" src="{{ article.image_url }}">
+                    </a>
                 </div>
                 {% if vars.update({'first': False}) %} {% endif %}
             {% else %}
                 <div class="carousel-item">
                     <div class="carousel-caption d-none d-md-block">
-                        <h3>{{ article.headline }}</h3>
+                        <h3>{{ article.headline }} ({{ article.date }})</h3>
                     </div>
-                    <img class="d-block w-100" src="{{ article.image_url }}">
+                    <a href="{{ article.article_url }}" target="_blank">
+                        <img class="d-block w-100" src="{{ article.image_url }}">
+                    </a>
                 </div>
             {% endif %}
         {% endfor %}
