@@ -6,3 +6,5 @@ class Config(object):
 
     SQLALCHEMY_DATABASE_URI = "postgresql://postgres:Dev12345!@localhost:5432/tothemoon"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    SCHEDULER_API_ENABLED = True
