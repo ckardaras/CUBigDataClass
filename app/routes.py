@@ -13,7 +13,9 @@ def dashboard():
     tweet_count=6
     price_count = btc_prices.query.count()
     news_count = btc_articles.query.count()
-    return render_template('dashboard.html', tweet_count=tweet_count, price_count=price_count, news_count=news_count)
+    news_articles = btc_articles.query.order_by(func.random()).limit(10).all()
+    return render_template('dashboard.html', tweet_count=tweet_count, price_count=price_count, news_count=news_count,
+                           articles=news_articles)
 
 
 @app.route('/')
