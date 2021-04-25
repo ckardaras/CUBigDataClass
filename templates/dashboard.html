@@ -1,16 +1,150 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-
+<script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
 <body class="bg-dark">
     <iframe src="{{ url_for('btc_cards') }}"  onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
     <div class="container-fluid">
         <div class="row">
             <div class="col">
-                <iframe src="{{ url_for('btc_daily_price') }}"  onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
+                <button id="one-day" class="btn btn-info">24 HR</button>
+                <button id="one-week" class="btn btn-info">ONE WEEK</button>
+                <button id="one-month" class="btn btn-info">ONE MONTH</button>
+                <button id="three-months" class="btn btn-info">THREE MONTHS</button>
+                <button id="one-year" class="btn btn-info">1 YEAR</button>
+                <button id="all" class="btn btn-info">ALL</button>
+                <div id="chart">
+                </div>
+
             </div>
             <div class="col">
-                <iframe src="{{ url_for('btc_news') }}" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
+                <iframe src="{{ url_for('btc_news') }}" id="articles" name="articles" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
             </div>
         </div>
     </div>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"> </script>
+<script>
+	var start_date = new Date("24 Apr 2019"); //Earliest BTC price history we have
+	var options = {
+	    series: [{
+	        data: [
+	            {% for price in prices %}
+	                {
+	                    x: new Date('{{ price.date }}').getTime(),
+	                    y: {{ price.average|round(2) }},
+	                },
+	            {% endfor %}
+	        ]
+	    }],
+	    chart: {
+            id: 'area-datetime',
+            type: 'area',
+            zoom: {
+                autoScaleYaxis: true
+            },
+            foreColor: '#53eeee'
+	    },
+	    annotations: {
+            yaxis: [{
+                y: 30,
+                borderColor: '#999',
+            }],
+            xaxis: [{
+                x: start_date.getTime(),
+                borderColor: '#999',
+                yAxisIndex: 0,
+            }]
+	    },
+	    dataLabels: {
+            enabled: false
+	    },
+	    markers: {
+            size: 0,
+            style: 'hollow',
+	    },
+	    xaxis: {
+            type: 'datetime',
+            min: start_date.getTime(),
+            tickAmount: 6,
+	    },
+	    tooltip: {
+            x: {
+                format: 'dd MMM yyyy'
+            }
+	    },
+	    fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.7,
+                opacityTo: 0.9,
+                stops: [0, 100]
+            }
+	    },
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+
+
+    let resetCssClasses = function(activeEl) {
+        let els = document.querySelectorAll('button');
+        Array.prototype.forEach.call(els, function(el) {
+            el.classList.remove('active');
+        });
+        activeEl.target.classList.add('active');
+    }
+
+    function zoom(days) {
+        var date = new Date();
+        date.setHours(0,0,0,0);
+        var start = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
+        chart.zoomX(
+            start.getTime(),
+            date.getTime()
+        );
+        let iFrame = $('#articles');
+        let url = "{{ url_for('btc_news') }}?since=" + start.toISOString().split('T')[0];
+        console.log(url);
+        iFrame.attr('src', url);
+    }
+
+    document.querySelector('#one-day').addEventListener('click', function(e) {
+        resetCssClasses(e);
+        zoom(1);
+    });
+
+    document.querySelector('#one-week').addEventListener('click', function(e) {
+        resetCssClasses(e);
+        zoom(7);
+    });
+
+    document.querySelector('#one-month').addEventListener('click', function(e) {
+        resetCssClasses(e);
+        zoom(30);
+    });
+
+    document.querySelector('#three-months').addEventListener('click', function(e) {
+        resetCssClasses(e);
+        zoom(90);
+    });
+
+    document.querySelector('#one-year').addEventListener('click', function(e) {
+        resetCssClasses(e);
+        zoom(365);
+    });
+
+    document.querySelector('#all').addEventListener('click', function(e) {
+        resetCssClasses(e);
+        var date = new Date();
+        chart.zoomX(
+            start_date.getTime(),
+            date.getTime()
+        );
+        let iFrame = $('#articles');
+        let url = "{{ url_for('btc_news') }}";
+        console.log(url);
+        iFrame.attr('src', url);
+    });
+</script>

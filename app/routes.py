@@ -10,14 +10,14 @@ from main import app, db
 @app.route('/')
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    price = btc_prices.query.order_by(btc_prices.date).all()
+    return render_template('dashboard.html', prices=price)
 
 
 @app.route('/btc/news')
 def btc_news():
     since = request.args.get('since')
     news_articles = None
-    print(since)
     if since is None:
         news_articles = btc_articles.query.order_by(func.random()).limit(30).all()
     else:
