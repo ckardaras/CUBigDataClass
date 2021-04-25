@@ -7,18 +7,26 @@ from app.models import *
 from main import app, db
 
 
+@app.route('/')
 @app.route('/dashboard')
 def dashboard():
-    #tweet_count = btc_tweets.query.count()
-    tweet_count=6
+    return render_template('dashboard.html')
+
+
+@app.route('/btc/news')
+def btc_news():
+    news_articles = btc_articles.query.order_by(func.random()).limit(10).all()
+    return render_template('bitcoin/news.html', articles = news_articles)
+
+
+@app.route('/btc/cards')
+def btc_cards():
+    tweet_count = 6
     price_count = btc_prices.query.count()
     news_count = btc_articles.query.count()
-    news_articles = btc_articles.query.order_by(func.random()).limit(10).all()
-    return render_template('dashboard.html', tweet_count=tweet_count, price_count=price_count, news_count=news_count,
-                           articles=news_articles)
+    return render_template('bitcoin/cards.html', tweet_count=tweet_count, price_count=price_count, news_count=news_count)
 
 
-@app.route('/')
 @app.route('/btc/price')
 def btc_daily_price():
     price = btc_prices.query.order_by(btc_prices.date).all()
