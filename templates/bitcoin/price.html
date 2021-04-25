@@ -1,9 +1,9 @@
-<button id="one-day">24 HR</button>
-<button id="one-week">ONE WEEK</button>
-<button id="one-month">ONE MONTH</button>
-<button id="three-months">THREE MONTHS</button>
-<button id="one-year">1 YEAR</button>
-<button id="all">ALL</button>
+<button id="one-day" class="btn btn-info">24 HR</button>
+<button id="one-week" class="btn btn-info">ONE WEEK</button>
+<button id="one-month" class="btn btn-info">ONE MONTH</button>
+<button id="three-months" class="btn btn-info">THREE MONTHS</button>
+<button id="one-year" class="btn btn-info">1 YEAR</button>
+<button id="all" class="btn btn-info">ALL</button>
 <div id="chart">
 </div>
  <!--<script src="{{ url_for('static', filename='js/apex/apexcharts.js') }}"></script> -->
@@ -16,44 +16,28 @@
                 {% for price in prices %}
                     {
                         x: new Date('{{ price.date }}').getTime(),
-                        y: {{ price.average }},
+                        y: {{ price.average|round(2) }},
                     },
                 {% endfor %}
             ]
         }],
-          chart: {
+        chart: {
           id: 'area-datetime',
           type: 'area',
-          height: 350,
           zoom: {
             autoScaleYaxis: true
-          }
+          },
+            foreColor: '#53eeee'
         },
         annotations: {
           yaxis: [{
             y: 30,
             borderColor: '#999',
-            label: {
-              show: true,
-              text: 'Support',
-              style: {
-                color: "#fff",
-                background: '#00E396'
-              }
-            }
           }],
           xaxis: [{
             x: start_date.getTime(),
             borderColor: '#999',
             yAxisIndex: 0,
-            label: {
-              show: true,
-              text: 'Rally',
-              style: {
-                color: "#fff",
-                background: '#775DD0'
-              }
-            }
           }]
         },
         dataLabels: {

@@ -7,11 +7,15 @@ from app.models import *
 from main import app, db
 
 
+@app.route('/dashboard')
+def dashboard():
+    #tweet_count = btc_tweets.query.count()
+    tweet_count=6
+    price_count = btc_prices.query.count()
+    return render_template('dashboard.html', tweet_count=tweet_count, price_count=price_count)
+
+
 @app.route('/')
-def home():
-    return render_template('dashboard.html')
-
-
 @app.route('/btc/price')
 def btc_daily_price():
     price = btc_prices.query.order_by(btc_prices.date).all()
