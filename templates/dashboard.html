@@ -9,13 +9,7 @@
     <option value="btc_monthly_sentiment">BTC Monthly Sentiment</option>
 </select>
 
-<iframe src="{{ url_for('btc_daily_price') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_daily_price"></iframe>
-<iframe src="{{ url_for('btc_weekly_price') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_weekly_price"></iframe>
-<iframe src="{{ url_for('btc_monthly_price') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_monthly_price"></iframe>
 
-<iframe src="{{ url_for('btc_daily_sentiment') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_daily_sentiment"></iframe>
-<iframe src="{{ url_for('btc_weekly_sentiment') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_weekly_sentiment"></iframe>
-<iframe src="{{ url_for('btc_monthly_sentiment') }}" class="iframe" scrolling="no" frameborder="0" style="width:100%; height:100%;" id="btc_monthly_sentiment"></iframe>
 
 <script>
     $('select').on('change', function() {
