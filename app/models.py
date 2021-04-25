@@ -34,7 +34,7 @@ class btc_articles(db.Model):
     image_url = db.Column(db.Text)
     headline = db.Column(db.Text)
     date = db.Column(db.Date)
-    sentiment = db.Column(db.Boolean)  # True = positive, False = negative
+    sentiment = db.Column(db.Integer)  # -1 = Negative, 0 = Neutral, 1 = Positive
 
 
 class ETH_Sentiments(db.Model):

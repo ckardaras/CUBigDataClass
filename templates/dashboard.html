@@ -1,19 +1,16 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 <style>
-    .card-img-top {
-        width: 100%;
-        height: 8vw;
-        object-fit: cover;
-    }
+
 </style>
 <body class="bg-dark">
     <div class="container">
         <div class="container-fluid content-row">
-            <div class="row">
-
+            <div class="card-deck">
                     <div class="card h-100 bg-light text-dark" style="width:200px">
-                        <img class="card-img-top img-fluid" src="{{ url_for('static', filename='img/twitter_logo.png') }}" alt="Card image">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <img class="card-img-top embed-responsive-item" src="{{ url_for('static', filename='img/twitter_logo.png') }}" alt="Card image">
+                        </div>
                         <div class="card-body">
                             <h4 class="card-title">{{ tweet_count }}</h4>
                             <p class="card-text">Tweets loaded</p>
@@ -21,10 +18,22 @@
                     </div>
 
                     <div class="card h-100 bg-light text-dark" style="width:200px">
-                        <img class="card-img-top img-fluid " src="{{ url_for('static', filename='img/price_icon.jpg') }}" alt="Card image">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <img class="card-img-top embed-responsive-item" src="{{ url_for('static', filename='img/price_icon.jpg') }}" alt="Card image">
+                        </div>
                         <div class="card-body">
                             <h4 class="card-title">{{ price_count }}</h4>
                             <p class="card-text">Days of price history</p>
+                        </div>
+                    </div>
+
+                    <div class="card h-100 bg-light text-dark" style="width:200px">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <img class="card-img-top embed-responsive-item" src="{{ url_for('static', filename='img/news.png') }}" alt="Card image">
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">{{ news_count }}</h4>
+                            <p class="card-text">News articles loaded</p>
                         </div>
                     </div>
 

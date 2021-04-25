@@ -12,7 +12,8 @@ def dashboard():
     #tweet_count = btc_tweets.query.count()
     tweet_count=6
     price_count = btc_prices.query.count()
-    return render_template('dashboard.html', tweet_count=tweet_count, price_count=price_count)
+    news_count = btc_articles.query.count()
+    return render_template('dashboard.html', tweet_count=tweet_count, price_count=price_count, news_count=news_count)
 
 
 @app.route('/')
