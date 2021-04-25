@@ -97,16 +97,15 @@
     }
 
     function zoom(days) {
-        var date = new Date();
+        let date = new Date();
         date.setHours(0,0,0,0);
-        var start = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
+        let start = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
         chart.zoomX(
             start.getTime(),
             date.getTime()
         );
         let iFrame = $('#articles');
         let url = "{{ url_for('btc_news') }}?since=" + start.toISOString().split('T')[0];
-        console.log(url);
         iFrame.attr('src', url);
     }
 
@@ -137,14 +136,13 @@
 
     document.querySelector('#all').addEventListener('click', function(e) {
         resetCssClasses(e);
-        var date = new Date();
+        let date = new Date();
         chart.zoomX(
             start_date.getTime(),
             date.getTime()
         );
         let iFrame = $('#articles');
         let url = "{{ url_for('btc_news') }}";
-        console.log(url);
         iFrame.attr('src', url);
     });
 </script>
