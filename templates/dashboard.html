@@ -181,8 +181,8 @@
         let news_iframe = $('#articles');
         let tweets_iframe = $('#tweets');
 
-        let news_url = "{{ url_for('btc_news') }}?since=" + start.toISOString().split('T')[0];
-        let tweets_url = "{{ url_for('btc_dashboard_tweets') }}?since=" + start.toISOString().split('T')[0];
+        let news_url = "{{ url_for('btc_news') }}";
+        let tweets_url = "{{ url_for('btc_dashboard_tweets') }}";
 
         news_iframe.attr('src', news_url);
         tweets_iframe.attr('src', tweets_url);
