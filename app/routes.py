@@ -116,7 +116,7 @@ def eth_daily_sentiment():
     start = date(year=2020, month=3, day=21)
     end = date(year=2021, month=3, day=16)
     btc_prices = ETH_Daily.query.filter(ETH_Daily.date >= start, ETH_Daily.date <= end).order_by(ETH_Daily.date).all()
-    sentiments = ETH_Sentiments.query.order_by(ETH_Sentiments.date).all()
+    sentiments = ETH_Sentiments.query.filter(ETH_Daily.date >= start, ETH_Daily.date <= end).order_by(ETH_Sentiments.date).all()
 
     chart_title = "ETH Daily Price vs Sentiment"
 
@@ -165,6 +165,50 @@ def eth_monthly_sentiment():
     return render_template('/ethereum/sentiment.html', btc=btc_prices, sentiments=sentiments, title=chart_title)
 
 
+@app.route('/eth/tweets')
+def eth_dashboard_tweets():
+    since = request.args.get('since')
+    tweets = None
+
+    if since is None:
+        count = 17216
+        random_row = math.floor(random.uniform(0, 1) * count)
+        tweets = ETH_Tweet.query.offset(random_row).limit(30).all()
+    else:
+        tweets = ETH_Tweet.query.filter(ETH_Tweet.date >= since).order_by(func.random()).limit(30).all()
+
+
+    return render_template('ethereum/tweets.html', tweets=tweets)
+
+@app.route('/eth/news')
+def eth_news():
+    since = request.args.get('since')
+    news_articles = None
+    if since is None:
+        news_articles = eth_articles.query.order_by(func.random()).limit(30).all()
+    else:
+        news_articles = eth_articles.query.filter(eth_articles.date >= since).order_by(func.random()).limit(30).all()
+
+    return render_template('ethereum/news.html', articles=news_articles)
+
+@app.route('/eth/cards')
+def eth_cards():
+    tweet_count = 6
+    price_count = eth_prices.query.count()
+    news_count = eth_articles.query.count()
+    return render_template('ethereum/cards.html', tweet_count=tweet_count, price_count=price_count,
+                           news_count=news_count)
+@app.route('/eth/dashboard')
+def eth_dashboard():
+    start = date(year=2020, month=3, day=21)
+    end = date(year=2021, month=4, day=24)
+    prices = eth_prices.query.filter(eth_prices.date >= start, eth_prices.date <= end).order_by(eth_prices.date).all()
+    tweet_sentiments = ETH_Sentiments.query.filter(ETH_Sentiments.date >= start, ETH_Sentiments.date <= end).order_by(
+        ETH_Sentiments.date).all()
+    article_sentiment = eth_article_sentiments.query.filter(eth_article_sentiments.date >= start,
+                                                            eth_article_sentiments.date <= end).order_by(
+        eth_article_sentiments.date).all()
+    return render_template('ethereum/dashboard.html', prices=prices, tweet_sentiments=tweet_sentiments, article_sentiments=article_sentiment)
 '''
 def query():
     new_row = BTC(price=5.3)
