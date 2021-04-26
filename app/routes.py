@@ -1,21 +1,10 @@
 from flask import render_template, send_file
 import nltk
-import twint
 from app.models import *
 from main import app, db
-import re
 from datetime import date, timedelta
-from nltk import RegexpTokenizer, WordNetLemmatizer, SnowballStemmer
-from nltk.corpus import stopwords
-import tweepy as tw
-import emot
-from pprint import pprint
-from textblob import TextBlob
 from app.models import *
 
-nltk.download('vader_lexicon') # download vader lexicon
-nltk.download("stopwords")
-nltk.download("wordnet")
 
 @app.route('/')
 def home():

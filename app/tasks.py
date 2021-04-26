@@ -137,7 +137,7 @@ def btc_task_grab_sentiment():
             break
         count += 1
 
-    to_insert2 = btc_sentiment(date=datetime.today().strftime('%Y-%m-%d'),
+    to_insert2 = btc_sentiments(date=datetime.today().strftime('%Y-%m-%d'),
                               avg_sentiment=tweet_sentiment/count
                               )
     db.session.add(to_insert2)
