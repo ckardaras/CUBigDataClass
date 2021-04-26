@@ -32,7 +32,7 @@ def grab_prices():
     db.session.commit()
 
 
-@app.route('/btc/dailyschedule')
+@scheduler.task("interval", id="grab_tweets", days=1, misfire_grace_time=900)
 def btc_task_grab_sentiment():
     #
     # functions for sentiment analysis
