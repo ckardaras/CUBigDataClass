@@ -12,8 +12,15 @@ from main import app, db
 @app.route('/')
 @app.route('/dashboard')
 def dashboard():
-    price = btc_prices.query.order_by(btc_prices.date).all()
-    return render_template('dashboard.html', prices=price)
+    start = date(year=2020, month=3, day=21)
+    end = date(year=2021, month=4, day=24)
+    prices = btc_prices.query.filter(btc_prices.date >= start, btc_prices.date <= end).order_by(btc_prices.date).all()
+    tweet_sentiments = btc_sentiments.query.filter(btc_sentiments.date >= start, btc_sentiments.date <= end).order_by(
+        btc_sentiments.date).all()
+    article_sentiment = btc_article_sentiments.query.filter(btc_article_sentiments.date >= start,
+                                                            btc_article_sentiments.date <= end).order_by(
+        btc_article_sentiments.date).all()
+    return render_template('dashboard.html', prices=prices, tweet_sentiments=tweet_sentiments, article_sentiments=article_sentiment)
 
 
 @app.route('/btc/news')
@@ -69,7 +76,8 @@ def btc_daily_sentiment():
 
     chart_title = "BTC Daily Price vs Sentiment"
 
-    return render_template('/bitcoin/sentiment.html', btc=prices, tweet_sentiments=tweet_sentiments, article_sentiments=article_sentiment, title=chart_title)
+    return render_template('/bitcoin/sentiment.html', btc=prices, tweet_sentiments=tweet_sentiments,
+                           article_sentiments=article_sentiment, title=chart_title)
 
 
 @app.errorhandler(404)

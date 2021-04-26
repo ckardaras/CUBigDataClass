@@ -1,147 +1,78 @@
-<div id="chart">
+<div id="synced-charts">
+    <div id="btc_price"></div>
+    <div id="tweet_sentiment"></div>
 </div>
  <!--<script src="{{ url_for('static', filename='js/apex/apexcharts.js') }}"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"> </script>
 
 <script>
-    var options = {
+    var optionsLine = {
         series: [{
-            name: 'Bitcoin Price',
-            type: 'column',
+            name: 'BTC Price (USD)',
             data: [
                 {% for daily_price in btc %}
                     {
-                        x: new Date('{{ daily_price.date }}').toLocaleDateString(),
+                        x: new Date('{{ daily_price.date }}').getTime(),
                         y: {{ daily_price.average }}
                     },
                 {% endfor %}
             ]
-        }, {
-          name: 'Average Tweet Sentiment',
-          type: 'line',
-          data: [
+        }],
+        colors: ['#00E396'],
+        chart: {
+            id: 'btc_price_column',
+            group: 'social',
+            type: 'area',
+            height: 400
+        },
+        dataLabels: {
+            enabled: false
+        },
+        yaxis: {
+            labels: {
+                minWidth: 40
+            }
+        }
+    };
+    var chart = new ApexCharts(document.querySelector("#btc_price"), optionsLine)
+    chart.render()
+
+    var optionsArea = {
+        series: [{
+            name: 'Average Tweet Sentiment',
+            data: [
                 {% for sentiment in tweet_sentiments %}
                     {
-                        x: new Date('{{ sentiment.date }}').toLocaleDateString(),
+                        x: new Date('{{ sentiment.date }}').getTime(),
                         y: {{ sentiment.avg_sentiment }}
                     },
                 {% endfor %}
-          ]
-        }, {
-          name: 'Average Article Sentiment',
-          type: 'line',
-          data: [
-              {% for sentiment in article_sentiments %}
+            ]
+        },
+        {
+            name: 'Average News Sentiment',
+            data: [
+                {% for sentiment in article_sentiments %}
                     {
-                        x: new Date('{{ sentiment.date }}').toLocaleDateString(),
+                        x: new Date('{{ sentiment.date }}').getTime(),
                         y: {{ sentiment.avg_sentiment }}
                     },
-              {% endfor %}
-          ]
+                {% endfor %}
+            ]
         }],
-        colors: ["#ff931e", "#00bdea", "#a52ffa"],
-          chart: {
-          height: 350,
-          type: 'line',
-          stacked: false
+        colors: ['#008FFB', '#ff4848'],
+        chart: {
+            id: 'tweet_sentiment_line',
+            group: 'social',
+            type: 'line',
+            height: 400
         },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          width: [1, 4, 4]
-        },
-        title: {
-          text: '{{ title }}',
-          align: 'left',
-          offsetX: 110
-        },
-        xaxis: {
-          categories: [{% for sentiment in tweet_sentiments %} new Date('{{ sentiment.date }}').toLocaleDateString(), {% endfor %}],
-        },
-        yaxis: [
-          {
-            axisTicks: {
-              show: true,
-            },
-            axisBorder: {
-              show: true,
-              color: '#008FFB'
-            },
+        yaxis: {
             labels: {
-              style: {
-                colors: '#008FFB',
-              }
-            },
-            title: {
-              text: "Income (thousand crores)",
-              style: {
-                color: '#008FFB',
-              }
-            },
-            tooltip: {
-              enabled: true
+                minWidth: 40
             }
-          },
-          {
-            seriesName: 'Income',
-            opposite: true,
-            axisTicks: {
-              show: true,
-            },
-            axisBorder: {
-              show: true,
-              color: '#00E396'
-            },
-            labels: {
-              style: {
-                colors: '#00E396',
-              }
-            },
-            title: {
-              text: "Operating Cashflow (thousand crores)",
-              style: {
-                color: '#00E396',
-              }
-            },
-          },
-          {
-            seriesName: 'Revenue',
-            opposite: true,
-            axisTicks: {
-              show: true,
-            },
-            axisBorder: {
-              show: true,
-              color: '#FEB019'
-            },
-            labels: {
-              style: {
-                colors: '#FEB019',
-              },
-            },
-            title: {
-              text: "Revenue (thousand crores)",
-              style: {
-                color: '#FEB019',
-              }
-            }
-          },
-        ],
-        tooltip: {
-          fixed: {
-            enabled: true,
-            position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
-            offsetY: 30,
-            offsetX: 60
-          },
-        },
-        legend: {
-          horizontalAlign: 'left',
-          offsetX: 40
         }
-        };
-
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
+    };
+    var chart = new ApexCharts(document.querySelector("#tweet_sentiment"), optionsArea)
+    chart.render()
 </script>
