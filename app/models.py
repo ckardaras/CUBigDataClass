@@ -18,6 +18,11 @@ class btc_sentiments(db.Model):
     avg_sentiment = db.Column(db.DECIMAL)
 
 
+class btc_article_sentiments(db.Model):
+    date = db.Column(db.Date, primary_key=True)
+    avg_sentiment = db.Column(db.DECIMAL)
+
+
 class btc_prices(db.Model):
     date = db.Column(db.Date, primary_key=True)
     open = db.Column(db.DECIMAL)

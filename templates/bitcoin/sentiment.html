@@ -9,52 +9,138 @@
             name: 'Bitcoin Price',
             type: 'column',
             data: [
-                {% for daily_price in btc %} {{ daily_price.average }}, {% endfor %}
+                {% for daily_price in btc %}
+                    {
+                        x: new Date('{{ daily_price.date }}').toLocaleDateString(),
+                        y: {{ daily_price.average }}
+                    },
+                {% endfor %}
             ]
         }, {
-          name: 'Sentiment Analysis',
+          name: 'Average Tweet Sentiment',
           type: 'line',
           data: [
-              {% for sentiment in sentiments %}
-                  {% if sentiment.avg_sentiment is defined %}
-                    {{ sentiment.avg_sentiment }},
-                  {% else %}
-                    {{ sentiment[0] }},
-                  {% endif %}
+                {% for sentiment in tweet_sentiments %}
+                    {
+                        x: new Date('{{ sentiment.date }}').toLocaleDateString(),
+                        y: {{ sentiment.avg_sentiment }}
+                    },
+                {% endfor %}
+          ]
+        }, {
+          name: 'Average Article Sentiment',
+          type: 'line',
+          data: [
+              {% for sentiment in article_sentiments %}
+                    {
+                        x: new Date('{{ sentiment.date }}').toLocaleDateString(),
+                        y: {{ sentiment.avg_sentiment }}
+                    },
               {% endfor %}
           ]
         }],
-        chart: {
+        colors: ["#ff931e", "#00bdea", "#a52ffa"],
+          chart: {
           height: 350,
           type: 'line',
-            colors: ['#F47B20', '#005596'],
-        },
-        stroke: {
-          width: [0, 4]
-        },
-        title: {
-          text: '{{ title }}'
+          stacked: false
         },
         dataLabels: {
-          enabled: true,
-          enabledOnSeries: [1]
+          enabled: false
         },
-        labels: [{% for daily_price in btc %}  new Date('{{ daily_price.date }}').toLocaleDateString(), {% endfor %}],
+        stroke: {
+          width: [1, 4, 4]
+        },
+        title: {
+          text: '{{ title }}',
+          align: 'left',
+          offsetX: 110
+        },
         xaxis: {
-          type: 'datetime'
+          categories: [{% for sentiment in tweet_sentiments %} new Date('{{ sentiment.date }}').toLocaleDateString(), {% endfor %}],
         },
-        yaxis: [{
-          title: {
-            text: 'Website Blog',
+        yaxis: [
+          {
+            axisTicks: {
+              show: true,
+            },
+            axisBorder: {
+              show: true,
+              color: '#008FFB'
+            },
+            labels: {
+              style: {
+                colors: '#008FFB',
+              }
+            },
+            title: {
+              text: "Income (thousand crores)",
+              style: {
+                color: '#008FFB',
+              }
+            },
+            tooltip: {
+              enabled: true
+            }
           },
-
-        }, {
-          opposite: true,
-          title: {
-            text: 'Social Media'
-          }
-        }]
-    };
+          {
+            seriesName: 'Income',
+            opposite: true,
+            axisTicks: {
+              show: true,
+            },
+            axisBorder: {
+              show: true,
+              color: '#00E396'
+            },
+            labels: {
+              style: {
+                colors: '#00E396',
+              }
+            },
+            title: {
+              text: "Operating Cashflow (thousand crores)",
+              style: {
+                color: '#00E396',
+              }
+            },
+          },
+          {
+            seriesName: 'Revenue',
+            opposite: true,
+            axisTicks: {
+              show: true,
+            },
+            axisBorder: {
+              show: true,
+              color: '#FEB019'
+            },
+            labels: {
+              style: {
+                colors: '#FEB019',
+              },
+            },
+            title: {
+              text: "Revenue (thousand crores)",
+              style: {
+                color: '#FEB019',
+              }
+            }
+          },
+        ],
+        tooltip: {
+          fixed: {
+            enabled: true,
+            position: 'topLeft', // topRight, topLeft, bottomRight, bottomLeft
+            offsetY: 30,
+            offsetX: 60
+          },
+        },
+        legend: {
+          horizontalAlign: 'left',
+          offsetX: 40
+        }
+        };
 
     var chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
