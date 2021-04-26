@@ -1,3 +1,5 @@
+import math
+import random
 from datetime import date
 
 from flask import render_template, send_file, request
@@ -23,7 +25,22 @@ def btc_news():
     else:
         news_articles = btc_articles.query.filter(btc_articles.date >= since).order_by(func.random()).limit(30).all()
 
-    return render_template('bitcoin/news.html', articles = news_articles)
+    return render_template('bitcoin/news.html', articles=news_articles)
+
+
+@app.route('/btc/tweets')
+def btc_dashboard_tweets():
+    since = request.args.get('since')
+    tweets = None
+
+    if since is None:
+        count = 2772897
+        random_row = math.floor(random.uniform(0, 1) * count)
+        tweets = btc_tweets.query.offset(random_row).limit(30).all()
+    else:
+        tweets = btc_tweets.query.filter(btc_tweets.date >= since).order_by(func.random()).limit(30).all()
+
+    return render_template('bitcoin/tweets.html', tweets=tweets)
 
 
 @app.route('/btc/cards')
@@ -31,7 +48,8 @@ def btc_cards():
     tweet_count = 6
     price_count = btc_prices.query.count()
     news_count = btc_articles.query.count()
-    return render_template('bitcoin/cards.html', tweet_count=tweet_count, price_count=price_count, news_count=news_count)
+    return render_template('bitcoin/cards.html', tweet_count=tweet_count, price_count=price_count,
+                           news_count=news_count)
 
 
 @app.route('/btc/price')

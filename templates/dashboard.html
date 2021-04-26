@@ -3,21 +3,25 @@
 <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
 <body class="bg-dark">
     <iframe src="{{ url_for('btc_cards') }}"  onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
+    <button id="one-day" class="btn btn-info">24 HR</button>
+    <button id="one-week" class="btn btn-info">ONE WEEK</button>
+    <button id="one-month" class="btn btn-info">ONE MONTH</button>
+    <button id="three-months" class="btn btn-info">THREE MONTHS</button>
+    <button id="one-year" class="btn btn-info">1 YEAR</button>
+    <button id="all" class="btn btn-info">ALL</button>
     <div class="container-fluid">
         <div class="row">
             <div class="col">
-                <button id="one-day" class="btn btn-info">24 HR</button>
-                <button id="one-week" class="btn btn-info">ONE WEEK</button>
-                <button id="one-month" class="btn btn-info">ONE MONTH</button>
-                <button id="three-months" class="btn btn-info">THREE MONTHS</button>
-                <button id="one-year" class="btn btn-info">1 YEAR</button>
-                <button id="all" class="btn btn-info">ALL</button>
-                <div id="chart">
-                </div>
-
+                <iframe src="{{ url_for('btc_dashboard_tweets') }}" id="tweets" name="tweets" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:800px;width:100%;border:none;overflow:hidden;"></iframe>
             </div>
             <div class="col">
-                <iframe src="{{ url_for('btc_news') }}" id="articles" name="articles" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
+                <iframe src="{{ url_for('btc_news') }}" id="articles" name="articles" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:auto;width:100%;border:none;overflow:hidden;"></iframe>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div id="chart">
+                </div>
             </div>
         </div>
     </div>
@@ -104,9 +108,14 @@
             start.getTime(),
             date.getTime()
         );
-        let iFrame = $('#articles');
-        let url = "{{ url_for('btc_news') }}?since=" + start.toISOString().split('T')[0];
-        iFrame.attr('src', url);
+        let news_iframe = $('#articles');
+        let tweets_iframe = $('#tweets');
+
+        let news_url = "{{ url_for('btc_news') }}?since=" + start.toISOString().split('T')[0];
+        let tweets_url = "{{ url_for('btc_dashboard_tweets') }}?since=" + start.toISOString().split('T')[0];
+
+        news_iframe.attr('src', news_url);
+        tweets_iframe.attr('src', tweets_url);
     }
 
     document.querySelector('#one-day').addEventListener('click', function(e) {
@@ -141,8 +150,13 @@
             start_date.getTime(),
             date.getTime()
         );
-        let iFrame = $('#articles');
-        let url = "{{ url_for('btc_news') }}";
-        iFrame.attr('src', url);
+        let news_iframe = $('#articles');
+        let tweets_iframe = $('#tweets');
+
+        let news_url = "{{ url_for('btc_news') }}?since=" + start.toISOString().split('T')[0];
+        let tweets_url = "{{ url_for('btc_dashboard_tweets') }}?since=" + start.toISOString().split('T')[0];
+
+        news_iframe.attr('src', news_url);
+        tweets_iframe.attr('src', tweets_url);
     });
 </script>
