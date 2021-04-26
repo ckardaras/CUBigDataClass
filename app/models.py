@@ -42,19 +42,6 @@ class btc_articles(db.Model):
     sentiment = db.Column(db.Integer)  # -1 = Negative, 0 = Neutral, 1 = Positive
 
 
-# ETHEREUM MODELS
-class eth_article_sentiments(db.Model):
-    date = db.Column(db.Date, primary_key=True)
-    avg_sentiment = db.Column(db.DECIMAL)
-
-
-class eth_articles(db.Model):
-    article_id = db.Column(db.Integer, primary_key=True)
-    article_url = db.Column(db.Text)
-    image_url = db.Column(db.Text)
-    headline = db.Column(db.Text)
-    date = db.Column(db.Date)
-    sentiment = db.Column(db.Integer)  # -1 = Negative, 0 = Neutral, 1 = Positive
 
 
 class ETH_Sentiments(db.Model):
@@ -85,6 +72,28 @@ class ETH_Daily(db.Model):
 
 
 class ETH_Weekly(db.Model):
+    date = db.Column(db.Date, primary_key=True)
+    open = db.Column(db.DECIMAL)
+    high = db.Column(db.DECIMAL)
+    low = db.Column(db.DECIMAL)
+    close = db.Column(db.DECIMAL)
+    average = db.Column(db.DECIMAL)
+    volume = db.Column(db.DECIMAL)
+
+class eth_article_sentiments(db.Model):
+    date = db.Column(db.Date, primary_key=True)
+    avg_sentiment = db.Column(db.DECIMAL)
+
+
+class eth_articles(db.Model):
+    article_id = db.Column(db.Integer, primary_key=True)
+    article_url = db.Column(db.Text)
+    image_url = db.Column(db.Text)
+    headline = db.Column(db.Text)
+    date = db.Column(db.Date)
+    sentiment = db.Column(db.Integer)  # -1 = Negative, 0 = Neutral, 1 = Positive
+
+class eth_prices(db.Model):
     date = db.Column(db.Date, primary_key=True)
     open = db.Column(db.DECIMAL)
     high = db.Column(db.DECIMAL)
