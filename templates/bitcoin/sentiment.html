@@ -1,61 +1,78 @@
-<div id="chart">
+<div id="synced-charts">
+    <div id="btc_price"></div>
+    <div id="tweet_sentiment"></div>
 </div>
  <!--<script src="{{ url_for('static', filename='js/apex/apexcharts.js') }}"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"> </script>
 
 <script>
-    var options = {
+    var optionsLine = {
         series: [{
-            name: 'Bitcoin Price',
-            type: 'column',
+            name: 'BTC Price (USD)',
             data: [
-                {% for daily_price in btc %} {{ daily_price.average }}, {% endfor %}
+                {% for daily_price in btc %}
+                    {
+                        x: new Date('{{ daily_price.date }}').getTime(),
+                        y: {{ daily_price.average }}
+                    },
+                {% endfor %}
             ]
-        }, {
-          name: 'Sentiment Analysis',
-          type: 'line',
-          data: [
-              {% for sentiment in sentiments %}
-                  {% if sentiment.avg_sentiment is defined %}
-                    {{ sentiment.avg_sentiment }},
-                  {% else %}
-                    {{ sentiment[0] }},
-                  {% endif %}
-              {% endfor %}
-          ]
         }],
+        colors: ['#00E396'],
         chart: {
-          height: 350,
-          type: 'line',
-            colors: ['#F47B20', '#005596'],
-        },
-        stroke: {
-          width: [0, 4]
-        },
-        title: {
-          text: '{{ title }}'
+            id: 'btc_price_column',
+            group: 'social',
+            type: 'area',
+            height: 400
         },
         dataLabels: {
-          enabled: true,
-          enabledOnSeries: [1]
+            enabled: false
         },
-        labels: [{% for daily_price in btc %}  new Date('{{ daily_price.date }}').toLocaleDateString(), {% endfor %}],
-        xaxis: {
-          type: 'datetime'
-        },
-        yaxis: [{
-          title: {
-            text: 'Website Blog',
-          },
-
-        }, {
-          opposite: true,
-          title: {
-            text: 'Social Media'
-          }
-        }]
+        yaxis: {
+            labels: {
+                minWidth: 40
+            }
+        }
     };
+    var chart = new ApexCharts(document.querySelector("#btc_price"), optionsLine)
+    chart.render()
 
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
+    var optionsArea = {
+        series: [{
+            name: 'Average Tweet Sentiment',
+            data: [
+                {% for sentiment in tweet_sentiments %}
+                    {
+                        x: new Date('{{ sentiment.date }}').getTime(),
+                        y: {{ sentiment.avg_sentiment }}
+                    },
+                {% endfor %}
+            ]
+        },
+        {
+            name: 'Average News Sentiment',
+            data: [
+                {% for sentiment in article_sentiments %}
+                    {
+                        x: new Date('{{ sentiment.date }}').getTime(),
+                        y: {{ sentiment.avg_sentiment }}
+                    },
+                {% endfor %}
+            ]
+        }],
+        colors: ['#008FFB', '#ff4848'],
+        chart: {
+            id: 'tweet_sentiment_line',
+            group: 'social',
+            type: 'line',
+            height: 400
+        },
+        yaxis: {
+            labels: {
+                minWidth: 40
+            }
+        }
+    };
+    var chart = new ApexCharts(document.querySelector("#tweet_sentiment"), optionsArea)
+    chart.render()
 </script>
