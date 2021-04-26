@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
 <body class="bg-dark">
+  <div class="container-fluid">
     <iframe src="{{ url_for('btc_cards') }}"  onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
     <button id="one-day" class="btn btn-info">24 HR</button>
     <button id="one-week" class="btn btn-info">ONE WEEK</button>
@@ -9,8 +10,174 @@
     <button id="three-months" class="btn btn-info">THREE MONTHS</button>
     <button id="one-year" class="btn btn-info">1 YEAR</button>
     <button id="all" class="btn btn-info">ALL</button>
-    <div class="container-fluid">
-        <div class="row">
+    <div class="row">
+        <div class="col">
+            <div id="synced-charts">
+                <div id="btc_price"></div>
+                <div id="tweet_sentiment"></div>
+                <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"> </script>
+                <script>
+                    let start_date = new Date('2020-03-21');
+                  var optionsLine = {
+                        series: [{
+                            name: 'BTC Price (USD)',
+                            data: [
+                                {% for daily_price in prices %}
+                                    {
+                                        x: new Date('{{ daily_price.date }}').getTime(),
+                                        y: {{ daily_price.average }}
+                                    },
+                                {% endfor %}
+                            ]
+                        }],
+                        colors: ['#00E396'],
+                        chart: {
+                            id: 'btc_price_column',
+                            group: 'social',
+                            type: 'area',
+                            height: 400,
+                            foreColor: '#53eeee'
+                        },
+                        dataLabels: {
+                            enabled: false
+                        },
+                        yaxis: {
+                            labels: {
+                                minWidth: 40
+                            }
+                        },
+                        xaxis: {
+                            type: 'datetime',
+                            min: start_date.getTime(),
+                        }
+                    };
+                    var chart = new ApexCharts(document.querySelector("#btc_price"), optionsLine)
+                    chart.render()
+
+                    var optionsArea = {
+                        series: [{
+                            name: 'Average Tweet Sentiment',
+                            data: [
+                                {% for sentiment in tweet_sentiments %}
+                                    {
+                                        x: new Date('{{ sentiment.date }}').getTime(),
+                                        y: {{ sentiment.avg_sentiment }}
+                                    },
+                                {% endfor %}
+                            ]
+                        },
+                        {
+                            name: 'Average News Sentiment',
+                            data: [
+                                {% for sentiment in article_sentiments %}
+                                    {
+                                        x: new Date('{{ sentiment.date }}').getTime(),
+                                        y: {{ sentiment.avg_sentiment }}
+                                    },
+                                {% endfor %}
+                            ]
+                        }],
+                        colors: ['#008FFB', '#ff4848'],
+                        chart: {
+                            id: 'tweet_sentiment_line',
+                            group: 'social',
+                            type: 'line',
+                            height: 400,
+                            foreColor: '#53eeee'
+                        },
+                        yaxis: {
+                            labels: {
+                                minWidth: 40
+                            }
+                        },
+                        xaxis: {
+                            type: 'datetime',
+                            min: start_date.getTime(),
+                        }
+                    };
+                    var chart2 = new ApexCharts(document.querySelector("#tweet_sentiment"), optionsArea)
+                    chart2.render()
+
+                    let resetCssClasses = function(activeEl) {
+                        let els = document.querySelectorAll('button');
+                        Array.prototype.forEach.call(els, function(el) {
+                            el.classList.remove('active');
+                        });
+                        activeEl.target.classList.add('active');
+                    }
+
+                    function zoom(days) {
+                        let date = new Date();
+                        date.setHours(0,0,0,0);
+                        let start = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
+                        chart.zoomX(
+                            start.getTime(),
+                            date.getTime()
+                        );
+                        chart2.zoomX(
+                            start.getTime(),
+                            date.getTime()
+                        );
+                        let news_iframe = $('#articles');
+                        let tweets_iframe = $('#tweets');
+
+                        let news_url = "{{ url_for('btc_news') }}?since=" + start.toISOString().split('T')[0];
+                        let tweets_url = "{{ url_for('btc_dashboard_tweets') }}?since=" + start.toISOString().split('T')[0];
+
+                        news_iframe.attr('src', news_url);
+                        tweets_iframe.attr('src', tweets_url);
+                    }
+
+                    document.querySelector('#one-day').addEventListener('click', function(e) {
+                        resetCssClasses(e);
+                        zoom(1);
+                    });
+
+                    document.querySelector('#one-week').addEventListener('click', function(e) {
+                        resetCssClasses(e);
+                        zoom(7);
+                    });
+
+                    document.querySelector('#one-month').addEventListener('click', function(e) {
+                        resetCssClasses(e);
+                        zoom(30);
+                    });
+
+                    document.querySelector('#three-months').addEventListener('click', function(e) {
+                        resetCssClasses(e);
+                        zoom(90);
+                    });
+
+                    document.querySelector('#one-year').addEventListener('click', function(e) {
+                        resetCssClasses(e);
+                        zoom(365);
+                    });
+
+                    document.querySelector('#all').addEventListener('click', function(e) {
+                        resetCssClasses(e);
+                        let date = new Date();
+                        chart.zoomX(
+                            start_date.getTime(),
+                            date.getTime()
+                        );
+                        chart2.zoomX(
+                            start_date.getTime(),
+                            date.getTime()
+                        );
+                        let news_iframe = $('#articles');
+                        let tweets_iframe = $('#tweets');
+
+                        let news_url = "{{ url_for('btc_news') }}";
+                        let tweets_url = "{{ url_for('btc_dashboard_tweets') }}";
+
+                        news_iframe.attr('src', news_url);
+                        tweets_iframe.attr('src', tweets_url);
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="row">
             <div class="col">
                 <iframe src="{{ url_for('btc_dashboard_tweets') }}" id="tweets" name="tweets" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:800px;width:100%;border:none;overflow:hidden;"></iframe>
             </div>
@@ -18,173 +185,5 @@
                 <iframe src="{{ url_for('btc_news') }}" id="articles" name="articles" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:auto;width:100%;border:none;overflow:hidden;"></iframe>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <div id="synced-charts">
-                    <div id="btc_price"></div>
-                    <div id="tweet_sentiment"></div>
-                </div>
-            </div>
-        </div>
     </div>
 </body>
-
-<script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"> </script>
-<script>
-    let start_date = new Date('2020-03-21');
-	var optionsLine = {
-        series: [{
-            name: 'BTC Price (USD)',
-            data: [
-                {% for daily_price in prices %}
-                    {
-                        x: new Date('{{ daily_price.date }}').getTime(),
-                        y: {{ daily_price.average }}
-                    },
-                {% endfor %}
-            ]
-        }],
-        colors: ['#00E396'],
-        chart: {
-            id: 'btc_price_column',
-            group: 'social',
-            type: 'area',
-            height: 400,
-            foreColor: '#53eeee'
-        },
-        dataLabels: {
-            enabled: false
-        },
-        yaxis: {
-            labels: {
-                minWidth: 40
-            }
-        },
-        xaxis: {
-            type: 'datetime',
-            min: start_date.getTime(),
-        }
-    };
-    var chart = new ApexCharts(document.querySelector("#btc_price"), optionsLine)
-    chart.render()
-
-    var optionsArea = {
-        series: [{
-            name: 'Average Tweet Sentiment',
-            data: [
-                {% for sentiment in tweet_sentiments %}
-                    {
-                        x: new Date('{{ sentiment.date }}').getTime(),
-                        y: {{ sentiment.avg_sentiment }}
-                    },
-                {% endfor %}
-            ]
-        },
-        {
-            name: 'Average News Sentiment',
-            data: [
-                {% for sentiment in article_sentiments %}
-                    {
-                        x: new Date('{{ sentiment.date }}').getTime(),
-                        y: {{ sentiment.avg_sentiment }}
-                    },
-                {% endfor %}
-            ]
-        }],
-        colors: ['#008FFB', '#ff4848'],
-        chart: {
-            id: 'tweet_sentiment_line',
-            group: 'social',
-            type: 'line',
-            height: 400,
-            foreColor: '#53eeee'
-        },
-        yaxis: {
-            labels: {
-                minWidth: 40
-            }
-        },
-        xaxis: {
-            type: 'datetime',
-            min: start_date.getTime(),
-        }
-    };
-    var chart2 = new ApexCharts(document.querySelector("#tweet_sentiment"), optionsArea)
-    chart2.render()
-
-    let resetCssClasses = function(activeEl) {
-        let els = document.querySelectorAll('button');
-        Array.prototype.forEach.call(els, function(el) {
-            el.classList.remove('active');
-        });
-        activeEl.target.classList.add('active');
-    }
-
-    function zoom(days) {
-        let date = new Date();
-        date.setHours(0,0,0,0);
-        let start = new Date(date.getTime() - (days * 24 * 60 * 60 * 1000));
-        chart.zoomX(
-            start.getTime(),
-            date.getTime()
-        );
-        chart2.zoomX(
-            start.getTime(),
-            date.getTime()
-        );
-        let news_iframe = $('#articles');
-        let tweets_iframe = $('#tweets');
-
-        let news_url = "{{ url_for('btc_news') }}?since=" + start.toISOString().split('T')[0];
-        let tweets_url = "{{ url_for('btc_dashboard_tweets') }}?since=" + start.toISOString().split('T')[0];
-
-        news_iframe.attr('src', news_url);
-        tweets_iframe.attr('src', tweets_url);
-    }
-
-    document.querySelector('#one-day').addEventListener('click', function(e) {
-        resetCssClasses(e);
-        zoom(1);
-    });
-
-    document.querySelector('#one-week').addEventListener('click', function(e) {
-        resetCssClasses(e);
-        zoom(7);
-    });
-
-    document.querySelector('#one-month').addEventListener('click', function(e) {
-        resetCssClasses(e);
-        zoom(30);
-    });
-
-    document.querySelector('#three-months').addEventListener('click', function(e) {
-        resetCssClasses(e);
-        zoom(90);
-    });
-
-    document.querySelector('#one-year').addEventListener('click', function(e) {
-        resetCssClasses(e);
-        zoom(365);
-    });
-
-    document.querySelector('#all').addEventListener('click', function(e) {
-        resetCssClasses(e);
-        let date = new Date();
-        chart.zoomX(
-            start_date.getTime(),
-            date.getTime()
-        );
-        chart2.zoomX(
-            start_date.getTime(),
-            date.getTime()
-        );
-        let news_iframe = $('#articles');
-        let tweets_iframe = $('#tweets');
-
-        let news_url = "{{ url_for('btc_news') }}";
-        let tweets_url = "{{ url_for('btc_dashboard_tweets') }}";
-
-        news_iframe.attr('src', news_url);
-        tweets_iframe.attr('src', tweets_url);
-    });
-</script>
