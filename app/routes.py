@@ -12,6 +12,9 @@ from main import app, db
 @app.route('/')
 @app.route('/dashboard')
 def dashboard():
+    tweet_count = 2920503
+    price_count = btc_prices.query.count()
+    news_count = btc_articles.query.count()
     start = date(year=2020, month=3, day=21)
     end = date(year=2021, month=4, day=24)
     prices = btc_prices.query.filter(btc_prices.date >= start, btc_prices.date <= end).order_by(btc_prices.date).all()
@@ -20,8 +23,8 @@ def dashboard():
     article_sentiment = btc_article_sentiments.query.filter(btc_article_sentiments.date >= start,
                                                             btc_article_sentiments.date <= end).order_by(
         btc_article_sentiments.date).all()
-    return render_template('dashboard.html', prices=prices, tweet_sentiments=tweet_sentiments, article_sentiments=article_sentiment)
-
+    return render_template('dashboard.html', prices=prices, tweet_sentiments=tweet_sentiments, article_sentiments=article_sentiment, tweet_count=tweet_count, price_count=price_count,
+                           news_count=news_count)
 
 @app.route('/btc/news')
 def btc_news():
@@ -132,10 +135,10 @@ def eth_weekly_sentiment():
     btc_prices = ETH_Weekly.query.filter(ETH_Weekly.date >= start, ETH_Weekly.date <= end).order_by(
         ETH_Weekly.date).all()
     sentiments = db.session.execute("""
-        select AVG(avg_sentiment)::float, 
+        select AVG(avg_sentiment)::float,
             date_trunc('week', date)::date
         from "ETH__sentiments"
-        group by 
+        group by
           date_trunc('week', date)
         order by date_trunc;
     """).fetchall()
@@ -152,10 +155,10 @@ def eth_monthly_sentiment():
     btc_prices = ETH_Monthly.query.filter(ETH_Monthly.date >= start, ETH_Monthly.date <= end).order_by(
         ETH_Monthly.date).all()
     sentiments = db.session.execute("""
-        select AVG(avg_sentiment)::float, 
+        select AVG(avg_sentiment)::float,
             date_trunc('month', date)::date
         from "ETH__sentiments"
-        group by 
+        group by
           date_trunc('month', date)
         order by date_trunc;
     """).fetchall()
