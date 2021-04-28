@@ -96,11 +96,11 @@ def page_not_found(error):
     return render_template('404.html', title='404'), 404
 
 
-@app.route('/wordcloud')
-def wordcloud():
+@app.route('/wordcloudBTC')
+def wordcloudBTC():
     credentials = "postgresql://postgres:Dev12345!@54.165.83.41:5432/tothemoon"
     subtract_byMonths = 0
-    startdate = (date(year=2021, month=4, day=24)+relativedelta(months=-subtract_byMonths))
+    startdate = (date(year=2021, month=4, day=23)+relativedelta(months=-subtract_byMonths))
     enddate = date(year=2021, month=4, day=24)
 
     sql_btc = """SELECT text,date 
@@ -110,10 +110,18 @@ def wordcloud():
     df_btc = pd.read_sql(sql_btc, con = credentials,params=[startdate, enddate])
     df_btc = df_btc.dropna(inplace=False)
     text_btc = " ".join(review for review in df_btc.text)
-    # print ("There are {} words in the combination of all review.".format(len(text)))
     stopwords = set(STOPWORDS)
-    wordcl_btc = WordCloud(stopwords=stopwords, background_color="black", max_font_size=300, max_words=1000, width=1000, height=600).generate(text_btc)
+    wordcl_btc = WordCloud(stopwords=stopwords, background_color="black", max_font_size=300, max_words=500, width=1400, height=600).generate(text_btc)
+    # saving as image
     wordcl_btc.to_file("./static/img/wordcloud_btc.png")
+    return render_template('/wordcloudBTC.html', title='wordcloudBTC')
+
+@app.route('/wordcloudETH')
+def wordcloudETH():
+    credentials = "postgresql://postgres:Dev12345!@54.165.83.41:5432/tothemoon"
+    subtract_byMonths = 0
+    startdate = (date(year=2021, month=3, day=24)+relativedelta(months=-subtract_byMonths))
+    enddate = date(year=2021, month=3, day=25)
 
     sql_eth = """SELECT text,date 
                 FROM public."ETH__tweet"
@@ -122,12 +130,11 @@ def wordcloud():
     df_eth = pd.read_sql(sql_eth, con = credentials,params=[startdate, enddate])
     df_eth = df_eth.dropna(inplace=False)
     text_eth = " ".join(review for review in df_eth.text)
-    # print ("There are {} words in the combination of all review.".format(len(text)))
-    wordcl_eth = WordCloud(stopwords=stopwords, background_color="black", max_font_size=200, max_words=500, width=1000, height=600).generate(text_eth)
+    stopwords = set(STOPWORDS)
+    wordcl_eth = WordCloud(stopwords=stopwords, background_color="black", max_font_size=200, max_words=500, width=1400, height=600).generate(text_eth)
     # saving as image
     wordcl_eth.to_file("./static/img/wordcloud_eth.png")
-    return render_template('/wordcloud.html', title='word cloud')
-
+    return render_template('/wordcloudETH.html', title='wordcloudETH')
 
 @app.route('/eth/daily/price')
 def eth_daily_price():
