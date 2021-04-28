@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Crypto Dashboard</title>
+    <title>Crypto Dashboard: {{title}}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
 </head>
@@ -23,7 +23,7 @@
   </div>
 </nav>
     <div class="container-fluid">
-      <br>
+      <br><h1 class="text-light text-center">{{title}}</h1>
       <br>
       <div class="control-group">
       <div style="width:60%" class="mx-auto">

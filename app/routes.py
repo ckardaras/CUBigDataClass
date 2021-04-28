@@ -32,7 +32,7 @@ def dashboard():
                                                             btc_article_sentiments.date <= end).order_by(
         btc_article_sentiments.date).all()
     return render_template('dashboard.html', prices=prices, tweet_sentiments=tweet_sentiments, article_sentiments=article_sentiment, tweet_count=tweet_count, price_count=price_count,
-                           news_count=news_count)
+                           news_count=news_count, title="Bitcoin")
 
 @app.route('/btc/news')
 def btc_news():
@@ -106,7 +106,7 @@ def wordcloudBTC():
     startdate = (date(year=2021, month=4, day=23)+relativedelta(months=-subtract_byMonths))
     enddate = date(year=2021, month=4, day=24)
 
-    sql_btc = """SELECT text,date 
+    sql_btc = """SELECT text,date
                 FROM public.btc_tweets
                 WHERE public.btc_tweets.date BETWEEN %s AND %s
                 """
@@ -126,7 +126,7 @@ def wordcloudETH():
     startdate = (date(year=2021, month=3, day=24)+relativedelta(months=-subtract_byMonths))
     enddate = date(year=2021, month=3, day=25)
 
-    sql_eth = """SELECT text,date 
+    sql_eth = """SELECT text,date
                 FROM public."ETH__tweet"
                 WHERE public."ETH__tweet".date BETWEEN %s AND %s
                 """
@@ -257,7 +257,7 @@ def eth_dashboard():
     article_sentiment = eth_article_sentiments.query.filter(eth_article_sentiments.date >= start,
                                                             eth_article_sentiments.date <= end).order_by(
         eth_article_sentiments.date).all()
-    return render_template('ethereum/dashboard.html', prices=prices, tweet_sentiments=tweet_sentiments, article_sentiments=article_sentiment)
+    return render_template('ethereum/dashboard.html', prices=prices, tweet_sentiments=tweet_sentiments, article_sentiments=article_sentiment, title="Ethereum")
 '''
 def query():
     new_row = BTC(price=5.3)
