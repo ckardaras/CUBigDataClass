@@ -242,7 +242,7 @@ def eth_news():
 
 @app.route('/eth/cards')
 def eth_cards():
-    tweet_count = 6
+    tweet_count = 17216
     price_count = eth_prices.query.count()
     news_count = eth_articles.query.count()
     return render_template('ethereum/cards.html', tweet_count=tweet_count, price_count=price_count,
