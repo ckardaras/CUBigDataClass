@@ -95,6 +95,9 @@ def btc_daily_sentiment():
 def page_not_found(error):
     return render_template('404.html', title='404'), 404
 
+@app.route('/wordcloud')
+def wordcloud_d3():
+    return render_template('/wordcloud.html', title='wordcloud-d3')
 
 @app.route('/wordcloudBTC')
 def wordcloudBTC():
