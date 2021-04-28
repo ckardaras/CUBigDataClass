@@ -1,0 +1,53 @@
+{% extends "/layout/page.html" %}
+{% block content %}
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Load d3-cloud -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
+
+<!-- Create a div where the word-cloud will take place -->
+<svg id="wordcloud" width="1600" height="960" style="margin: auto;"></svg>
+
+
+<script>
+
+// List of words
+var fill = d3.scaleOrdinal(d3.schemeCategory20);
+
+    var data = [{text: "money", value: 3991}, {text: "bitcoin", value: 3624}, {text: "gift", value: 3281}, {text: "wrapped", value: 3253}, {text: "price", value: 3141}, {text: "bag", value: 2796}, {text: "rocket", value: 2452}, {text: "btc", value: 1845}, {text: "face", value: 1816}, {text: "buy", value: 1718}, {text: "get", value: 1628}, {text: "market", value: 1615}, {text: "link", value: 1544}, {text: "crypto", value: 1492}, {text: "value", value: 1465}, {text: "live", value: 1362}, {text: "airdrop", value: 1303}, {text: "click", value: 1251}, {text: "time", value: 1240}, {text: "referral", value: 1227}, {text: "rewards", value: 1204}, {text: "amp", value: 1203}, {text: "amazing", value: 1174}, {text: "trophy", value: 1127}, {text: "like", value: 1119}, {text: "new", value: 1100}, {text: "usd", value: 1096}, {text: "participate", value: 1088}, {text: "last", value: 1077}, {text: "silhouette", value: 1067}, {text: "busts", value: 1064}, {text: "confused", value: 1042}, {text: "via", value: 1011}, {text: "right", value: 973}, {text: "one", value: 960}, {text: "chart", value: 934}, {text: "free", value: 922}, {text: "fire", value: 880}, {text: "index", value: 840}, {text: "current", value: 798}, {text: "pointing", value: 786}, {text: "backhand", value: 761}, {text: "see", value: 758}, {text: "trading", value: 750}, {text: "people", value: 736}, {text: "long", value: 708}, {text: "next", value: 704}, {text: "today", value: 693}, {text: "high", value: 692}, {text: "us", value: 691}, {text: "going", value: 667}, {text: "join", value: 657}, {text: "good", value: 654}, {text: "check", value: 653}, {text: "go", value: 639}, {text: "would", value: 611}, {text: "worth", value: 607}, {text: "eyes", value: 598}, {text: "smiling", value: 591}, {text: "still", value: 589}, {text: "drunk", value: 576}, {text: "day", value: 568}, {text: "top", value: 559}, {text: "hand", value: 553}, {text: "think", value: 551}, {text: "earn", value: 541}, {text: "person", value: 537}, {text: "short", value: 526}, {text: "bet", value: 526}, {text: "back", value: 525}, {text: "sell", value: 524}, {text: "first", value: 519}, {text: "volume", value: 516}, {text: "trade", value: 506}, {text: "make", value: 505}, {text: "exchange", value: 500}, {text: "world", value: 496}, {text: "blockchain", value: 489}, {text: "use", value: 479}, {text: "hour", value: 477}, {text: "binance", value: 474}, {text: "hours", value: 472}, {text: "gold", value: 469}, {text: "way", value: 469}, {text: "know", value: 468}, {text: "year", value: 466}, {text: "need", value: 463}, {text: "news", value: 457}, {text: "mark", value: 456}, {text: "days", value: 455}, {text: "arrow", value: 455}, {text: "big", value: 454}, {text: "update", value: 452}, {text: "could", value: 448}, {text: "raising", value: 447}, {text: "gt", value: 445}, {text: "white", value: 444}, {text: "sign", value: 440}, {text: "best", value: 440}, {text: "change", value: 438}];
+
+
+    var layout = d3.layout.cloud()
+        .size([1600, 960])
+        .words(data)
+        // .font("Impact")
+        .padding(.5)
+
+        .on("end", draw);
+
+    layout.start();
+
+    function draw(words) {
+        d3.select("#wordcloud")
+            .append("g")
+            .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+            .selectAll("text")
+            .data(words)
+            .enter()
+            .append("text")
+            .text((d) => d.text)
+            .style("font-size", (d) => d.size + "px")
+            .style("font-family", (d) => d.font)
+            .style("fill", (d, i) => fill(i))
+            .attr("text-anchor", "middle")
+            .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
+    }
+</script>
+{% endblock %}
+
