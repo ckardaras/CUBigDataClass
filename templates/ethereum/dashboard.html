@@ -1,15 +1,17 @@
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+{% extends "base.html" %}
+{% block cards %}
 <script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
-<body class="bg-dark">
-  <div class="container-fluid">
-    <iframe src="{{ url_for('btc_cards') }}"  onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
-    <button id="one-day" class="btn btn-info">24 HR</button>
-    <button id="one-week" class="btn btn-info">ONE WEEK</button>
-    <button id="one-month" class="btn btn-info">ONE MONTH</button>
-    <button id="three-months" class="btn btn-info">THREE MONTHS</button>
-    <button id="one-year" class="btn btn-info">1 YEAR</button>
-    <button id="all" class="btn btn-info">ALL</button>
+<iframe src="{{ url_for('btc_cards') }}"  onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
+{% endblock %}
+
+{% block graph %}
+<button id="one-day" class="btn btn-info">24 HR</button>
+<button id="one-week" class="btn btn-info">ONE WEEK</button>
+<button id="one-month" class="btn btn-info">ONE MONTH</button>
+<button id="three-months" class="btn btn-info">THREE MONTHS</button>
+<button id="one-year" class="btn btn-info">1 YEAR</button>
+<button id="all" class="btn btn-info">ALL</button>
     <div class="row">
         <div class="col">
             <div id="synced-charts">
@@ -177,6 +179,8 @@
             </div>
         </div>
     </div>
+    {% endblock %}
+    {% block news %}
     <div class="row">
             <div class="col">
                 <iframe src="{{ url_for('btc_dashboard_tweets') }}" id="tweets" name="tweets" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:800px;width:100%;border:none;overflow:hidden;"></iframe>
@@ -185,5 +189,7 @@
                 <iframe src="{{ url_for('btc_news') }}" id="articles" name="articles" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:auto;width:100%;border:none;overflow:hidden;"></iframe>
             </div>
         </div>
-    </div>
-</body>
+    {% endblock %}
+    {% block wordcloud %}
+    <img src="/static/img/wordcloud_eth.png">
+    {% endblock %}
